@@ -1,0 +1,194 @@
+body {
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  background: linear-gradient(135deg, #0f172a, #111827, #1e293b);
+  color: white;
+  min-height: 100vh;
+  display: flex;
+}
+
+/* SIDEBAR */
+
+.sidebar {
+  width: 250px;
+  height: 100vh;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  padding: 30px;
+  border-right: 1px solid rgba(255, 255, 255, 0.1);
+  position: fixed;
+}
+
+.logo {
+  color: #38bdf8;
+  margin-bottom: 40px;
+}
+
+.sidebar ul {
+  list-style: none;
+  padding: 0;
+}
+
+.sidebar li {
+  padding: 15px;
+  margin-bottom: 15px;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.sidebar li:hover {
+  background: #38bdf8;
+  transform: translateX(5px);
+}
+
+.logout-btn {
+  margin-top: 40px;
+  width: 100%;
+  padding: 12px;
+  border: none;
+  border-radius: 12px;
+  background: #ef4444;
+  color: white;
+}
+
+/* MAIN CONTENT */
+
+.main-content {
+  margin-left: 270px;
+  padding: 40px;
+  width: 100%;
+}
+
+.top-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 40px;
+}
+
+.theme-btn {
+  background: #8b5cf6;
+  border: none;
+  color: white;
+  padding: 12px 18px;
+  border-radius: 12px;
+}
+
+/* GLASS CARD */
+
+.glass-card {
+  background: rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(12px);
+  border-radius: 20px;
+  padding: 25px;
+  margin-bottom: 30px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+
+  transition: 0.3s;
+}
+
+.glass-card:hover {
+  transform: translateY(-5px);
+}
+
+/* STATS */
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+.blue-card {
+  border-left: 5px solid #38bdf8;
+}
+
+.green-card {
+  border-left: 5px solid #22c55e;
+}
+
+.orange-card {
+  border-left: 5px solid #f59e0b;
+}
+
+/* FORM */
+
+.task-form-card form {
+  display: grid;
+  gap: 15px;
+}
+
+.task-form-card input,
+.task-form-card textarea,
+.task-form-card select {
+  background: #1e293b;
+  border: none;
+  padding: 15px;
+  border-radius: 12px;
+  color: white;
+}
+
+.task-form-card button {
+  background: linear-gradient(45deg, #3b82f6, #8b5cf6);
+
+  border: none;
+  padding: 15px;
+  border-radius: 12px;
+  color: white;
+  font-weight: bold;
+}
+
+/* FILTER BUTTONS */
+
+.filter-buttons {
+  display: flex;
+  gap: 15px;
+}
+
+.filter-buttons button {
+  background: #334155;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 10px;
+  color: white;
+}
+
+/* TABLE */
+
+.table {
+  color: white;
+}
+
+.table th {
+  color: #38bdf8;
+}
+
+/* PROGRESS */
+
+.progress {
+  height: 20px;
+  border-radius: 20px;
+}
+
+.progress-bar {
+  background: linear-gradient(45deg, #22c55e, #38bdf8);
+}
+
+/* MOBILE */
+
+@media (max-width: 900px) {
+  .sidebar {
+    display: none;
+  }
+
+  .main-content {
+    margin-left: 0;
+  }
+
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+}
