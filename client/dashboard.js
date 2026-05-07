@@ -5,6 +5,10 @@ function saveTasks() {
 }
 
 function renderTasks(tasks) {
+  const tableBody = document.getElementById("taskTableBody");
+
+  tableBody.innerHTML = "";
+
   document.getElementById("totalTasks").innerText = tasks.length;
 
   const completed = tasks.filter((task) => task.status === "Completed").length;
@@ -14,10 +18,6 @@ function renderTasks(tasks) {
   document.getElementById("completedTasks").innerText = completed;
 
   document.getElementById("pendingTasks").innerText = pending;
-
-  const tableBody = document.getElementById("taskTableBody");
-
-  tableBody.innerHTML = "";
 
   tasks.forEach((task, index) => {
     tableBody.innerHTML += `

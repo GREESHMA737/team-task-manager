@@ -197,7 +197,7 @@
           </div>
         </div>
 
-        <div id="tasksSection">
+        <div id="tasksSection" style="display: none">
           <div class="card-box">
             <button onclick="filterTasks('all')">All</button>
 
@@ -221,15 +221,7 @@
           </div>
         </div>
 
-        <div id="analyticsSection" style="display: none">
-          <div class="card-box">
-            <h2>Analytics</h2>
-
-            <br />
-
-            <h3 id="analyticsText">Track your productivity</h3>
-          </div>
-        </div>
+        <div id="analyticsSection" style="display: none"></div>
 
         <div id="calendarSection" style="display: none">
           <div class="card-box">
@@ -363,6 +355,47 @@ Delete
         }
       }
 
+      function updateAnalytics() {
+        const total = allTasks.length;
+
+        const completed = allTasks.filter(
+          (task) => task.status === "Completed",
+        ).length;
+
+        const pending = allTasks.filter(
+          (task) => task.status === "Pending",
+        ).length;
+
+        const completionRate =
+          total > 0 ? Math.round((completed / total) * 100) : 0;
+
+        document.getElementById("analyticsSection").innerHTML = `
+
+<div class="card-box">
+
+<h2>Analytics</h2>
+
+<br>
+
+<h3>Total Tasks: ${total}</h3>
+
+<br>
+
+<h3>Completed: ${completed}</h3>
+
+<br>
+
+<h3>Pending: ${pending}</h3>
+
+<br>
+
+<h3>Completion Rate: ${completionRate}%</h3>
+
+</div>
+
+`;
+      }
+
       function showSection(section) {
         document.getElementById("dashboardSection").style.display =
           section === "dashboard" ? "block" : "none";
@@ -375,6 +408,10 @@ Delete
 
         document.getElementById("calendarSection").style.display =
           section === "calendar" ? "block" : "none";
+
+        if (section === "analytics") {
+          updateAnalytics();
+        }
       }
 
       function showTasksForDate() {
