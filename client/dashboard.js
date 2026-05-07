@@ -1,85 +1,48 @@
-let allTasks = [];
+let allTasks = JSON.parse(localStorage.getItem("tasks")) || [];
 
-// FETCH TASKS
-
-async function fetchTasks() {
-  try {
-    const response = await fetch(
-      "https://team-task-manager-production-8cb5.up.railway.app/api/tasks",
-    );
-
-    const tasks = await response.json();
-
-    allTasks = tasks;
-
-    renderTasks(tasks);
-  } catch (error) {
-    console.log(error);
-  }
+function saveTasks() {
+  localStorage.setItem("tasks", JSON.stringify(allTasks));
 }
-
-// RENDER TASKS
 
 function renderTasks(tasks) {
   document.getElementById("totalTasks").innerText = tasks.length;
 
-  const completedTasks = tasks.filter(
-    (task) => task.status === "Completed",
-  ).length;
+  const completed = tasks.filter((task) => task.status === "Completed").length;
 
-  const pendingTasks = tasks.filter((task) => task.status === "Pending").length;
+  const pending = tasks.filter((task) => task.status === "Pending").length;
 
-  document.getElementById("completedTasks").innerText = completedTasks;
+  document.getElementById("completedTasks").innerText = completed;
 
-  document.getElementById("pendingTasks").innerText = pendingTasks;
-
-  const progress =
-    tasks.length > 0 ? Math.round((completedTasks / tasks.length) * 100) : 0;
-
-  document.getElementById("progressBar").style.width = `${progress}%`;
-
-  document.getElementById("progressText").innerText = `${progress}% Completed`;
+  document.getElementById("pendingTasks").innerText = pending;
 
   const tableBody = document.getElementById("taskTableBody");
 
   tableBody.innerHTML = "";
 
-  tasks.forEach((task) => {
-    const row = `
+  tasks.forEach((task, index) => {
+    tableBody.innerHTML += `
       <tr>
 
         <td>${task.title}</td>
 
-        <td>
+        <td>${task.status}</td>
 
-          <span class="
-            badge
-            ${task.status === "Completed" ? "bg-success" : "bg-warning"}
-          ">
+        <td>${task.priority}</td>
 
-            ${task.status}
-
-          </span>
-
-        </td>
-
-        <td>
-
-          ${task.priority || "Medium"}
-
-        </td>
-
-        <td>
-
-          ${new Date(task.dueDate).toLocaleDateString()}
-
-        </td>
+        <td>${task.dueDate}</td>
 
         <td>
 
           <button
+            onclick="toggleStatus(${index})"
+            class="btn btn-success btn-sm"
+          >
+            Done
+          </button>
+
+          <button
+            onclick="deleteTask(${index})"
             class="btn btn-danger btn-sm"
-            onclick="deleteTask('${task._id}')"
           >
             Delete
           </button>
@@ -88,16 +51,10 @@ function renderTasks(tasks) {
 
       </tr>
     `;
-
-    tableBody.innerHTML += row;
   });
 }
 
-// CREATE TASK
-
-const taskForm = document.getElementById("taskForm");
-
-taskForm.addEventListener("submit", async (e) => {
+document.getElementById("taskForm").addEventListener("submit", (e) => {
   e.preventDefault();
 
   const title = document.getElementById("title").value;
@@ -108,38 +65,43 @@ taskForm.addEventListener("submit", async (e) => {
 
   const priority = document.getElementById("priority").value;
 
-  try {
-    const response = await fetch(
-      "https://team-task-manager-production-8cb5.up.railway.app/api/tasks/create",
-      {
-        method: "POST",
+  const task = {
+    title,
 
-        headers: {
-          "Content-Type": "application/json",
-        },
+    description,
 
-        body: JSON.stringify({
-          title,
-          description,
-          dueDate,
-          priority,
-        }),
-      },
-    );
+    dueDate,
 
-    const data = await response.json();
+    priority,
 
-    alert(data.message);
+    status: "Pending",
+  };
 
-    await fetchTasks();
+  allTasks.push(task);
 
-    taskForm.reset();
-  } catch (error) {
-    console.log(error);
-  }
+  saveTasks();
+
+  renderTasks(allTasks);
+
+  document.getElementById("taskForm").reset();
 });
 
-// FILTER TASKS
+function deleteTask(index) {
+  allTasks.splice(index, 1);
+
+  saveTasks();
+
+  renderTasks(allTasks);
+}
+
+function toggleStatus(index) {
+  allTasks[index].status =
+    allTasks[index].status === "Pending" ? "Completed" : "Pending";
+
+  saveTasks();
+
+  renderTasks(allTasks);
+}
 
 function filterTasks(status) {
   if (status === "all") {
@@ -151,140 +113,22 @@ function filterTasks(status) {
   }
 }
 
-// SHOW SECTION
-
 function showSection(section) {
-  const dashboard = document.getElementById("dashboardSection");
+  document.getElementById("dashboardSection").style.display =
+    section === "dashboard" ? "block" : "none";
 
-  const tasks = document.getElementById("tasksSection");
+  document.getElementById("tasksSection").style.display =
+    section === "tasks" ? "block" : "none";
 
-  const analytics = document.getElementById("analyticsSection");
+  document.getElementById("analyticsSection").style.display =
+    section === "analytics" ? "block" : "none";
 
-  const calendar = document.getElementById("calendarSection");
-
-  dashboard.style.display = "none";
-
-  tasks.style.display = "none";
-
-  analytics.style.display = "none";
-
-  calendar.style.display = "none";
-
-  if (section === "dashboard") {
-    dashboard.style.display = "block";
-  }
-
-  if (section === "tasks") {
-    tasks.style.display = "block";
-  }
-
-  if (section === "analytics") {
-    analytics.style.display = "block";
-
-    updateAnalytics();
-  }
-
-  if (section === "calendar") {
-    calendar.style.display = "block";
-  }
+  document.getElementById("calendarSection").style.display =
+    section === "calendar" ? "block" : "none";
 }
-
-// ANALYTICS
-
-function updateAnalytics() {
-  const total = allTasks.length;
-
-  const completed = allTasks.filter(
-    (task) => task.status === "Completed",
-  ).length;
-
-  const pending = allTasks.filter((task) => task.status === "Pending").length;
-
-  const completionRate = total > 0 ? Math.round((completed / total) * 100) : 0;
-
-  document.getElementById("analyticsTotal").innerText = total;
-
-  document.getElementById("analyticsCompletion").innerText =
-    `${completionRate}%`;
-
-  document.getElementById("analyticsPending").innerText = pending;
-}
-
-// CALENDAR
-
-function showTasksForDate() {
-  const selectedDate = document.getElementById("calendarDate").value;
-
-  const calendarTasks = document.getElementById("calendarTasks");
-
-  const filteredTasks = allTasks.filter((task) => {
-    const taskDate = new Date(task.dueDate).toISOString().split("T")[0];
-
-    return taskDate === selectedDate;
-  });
-
-  if (filteredTasks.length === 0) {
-    calendarTasks.innerHTML = `
-      <p>
-        No tasks due on this date.
-      </p>
-    `;
-
-    return;
-  }
-
-  let html = "";
-
-  filteredTasks.forEach((task) => {
-    html += `
-      <div class="glass-card mt-3">
-
-        <h4>${task.title}</h4>
-
-        <p>${task.description}</p>
-
-      </div>
-    `;
-  });
-
-  calendarTasks.innerHTML = html;
-}
-
-// DELETE TASK
-
-async function deleteTask(id) {
-  const confirmDelete = confirm("Delete this task?");
-
-  if (!confirmDelete) {
-    return;
-  }
-
-  try {
-    const response = await fetch(
-      `https://team-task-manager-production-8cb5.up.railway.app/api/tasks/${id}`,
-      {
-        method: "DELETE",
-      },
-    );
-
-    const data = await response.json();
-
-    alert(data.message);
-
-    fetchTasks();
-  } catch (error) {
-    console.log(error);
-  }
-}
-
-// LOGOUT
 
 function logout() {
-  localStorage.removeItem("token");
-
   window.location.href = "login.html";
 }
 
-// INITIAL LOAD
-
-fetchTasks();
+renderTasks(allTasks);
