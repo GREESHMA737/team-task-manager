@@ -7,11 +7,9 @@ loginForm.addEventListener("submit", async (e) => {
 
   const password = document.getElementById("password").value;
 
-  console.log(email, password);
-
   try {
     const response = await fetch(
-      "https://team-task-manager-production-8cb5.up.railway.app",
+      "https://team-task-manager-production-8cb5.up.railway.app/api/auth/login",
       {
         method: "POST",
 
@@ -28,14 +26,12 @@ loginForm.addEventListener("submit", async (e) => {
 
     const data = await response.json();
 
-    console.log(data);
-
-    alert(data.message);
-
-    if (data.token) {
-      localStorage.setItem("token", data.token);
+    if (response.ok) {
+      alert("Login successful");
 
       window.location.href = "dashboard.html";
+    } else {
+      alert(data.message);
     }
   } catch (error) {
     console.log(error);
