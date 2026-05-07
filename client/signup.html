@@ -72,9 +72,13 @@
 
           alert(data.message);
 
-          window.location.href = "login.html";
+          if (response.ok) {
+            window.location.href = "login.html";
+          }
         } catch (error) {
           console.log(error);
+
+          alert("Signup failed");
         }
       });
     </script>
