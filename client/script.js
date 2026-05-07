@@ -1,41 +1,9 @@
 const loginForm = document.getElementById("loginForm");
 
-loginForm.addEventListener("submit", async (e) => {
+loginForm.addEventListener("submit", (e) => {
   e.preventDefault();
 
-  const email = document.getElementById("email").value;
+  alert("Login Successful");
 
-  const password = document.getElementById("password").value;
-
-  try {
-    const response = await fetch(
-      "https://team-task-manager-production-8cb5.up.railway.app/api/auth/login",
-      {
-        method: "POST",
-
-        headers: {
-          "Content-Type": "application/json",
-        },
-
-        body: JSON.stringify({
-          email,
-          password,
-        }),
-      },
-    );
-
-    const data = await response.json();
-
-    if (response.ok) {
-      alert("Login successful");
-
-      window.location.href = "dashboard.html";
-    } else {
-      alert(data.message);
-    }
-  } catch (error) {
-    console.log(error);
-
-    alert("Login failed");
-  }
+  window.location.href = "dashboard.html";
 });
