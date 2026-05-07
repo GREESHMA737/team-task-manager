@@ -4,7 +4,9 @@ let allTasks = [];
 
 async function fetchTasks() {
   try {
-    const response = await fetch("http://localhost:5000/api/tasks");
+    const response = await fetch(
+      "https://team-task-manager-production-8cb5.up.railway.app/api/tasks",
+    );
 
     const tasks = await response.json();
 
@@ -44,52 +46,48 @@ function renderTasks(tasks) {
 
   tasks.forEach((task) => {
     const row = `
-            <tr>
+      <tr>
 
-                <td>${task.title}</td>
+        <td>${task.title}</td>
 
-                <td>
+        <td>
 
-                    <span class="
-                        badge
-                        ${
-                          task.status === "Completed"
-                            ? "bg-success"
-                            : "bg-warning"
-                        }
-                    ">
+          <span class="
+            badge
+            ${task.status === "Completed" ? "bg-success" : "bg-warning"}
+          ">
 
-                        ${task.status}
+            ${task.status}
 
-                    </span>
+          </span>
 
-                </td>
+        </td>
 
-                <td>
+        <td>
 
-                    ${task.priority || "Medium"}
+          ${task.priority || "Medium"}
 
-                </td>
+        </td>
 
-                <td>
+        <td>
 
-                    ${new Date(task.dueDate).toLocaleDateString()}
+          ${new Date(task.dueDate).toLocaleDateString()}
 
-                </td>
+        </td>
 
-                <td>
+        <td>
 
-                    <button
-                        class="btn btn-danger btn-sm"
-                        onclick="deleteTask('${task._id}')"
-                    >
-                        Delete
-                    </button>
+          <button
+            class="btn btn-danger btn-sm"
+            onclick="deleteTask('${task._id}')"
+          >
+            Delete
+          </button>
 
-                </td>
+        </td>
 
-            </tr>
-        `;
+      </tr>
+    `;
 
     tableBody.innerHTML += row;
   });
@@ -111,20 +109,23 @@ taskForm.addEventListener("submit", async (e) => {
   const priority = document.getElementById("priority").value;
 
   try {
-    const response = await fetch("http://localhost:5000/api/tasks/create", {
-      method: "POST",
+    const response = await fetch(
+      "https://team-task-manager-production-8cb5.up.railway.app/api/tasks/create",
+      {
+        method: "POST",
 
-      headers: {
-        "Content-Type": "application/json",
+        headers: {
+          "Content-Type": "application/json",
+        },
+
+        body: JSON.stringify({
+          title,
+          description,
+          dueDate,
+          priority,
+        }),
       },
-
-      body: JSON.stringify({
-        title,
-        description,
-        dueDate,
-        priority,
-      }),
-    });
+    );
 
     const data = await response.json();
 
@@ -224,10 +225,10 @@ function showTasksForDate() {
 
   if (filteredTasks.length === 0) {
     calendarTasks.innerHTML = `
-            <p>
-                No tasks due on this date.
-            </p>
-        `;
+      <p>
+        No tasks due on this date.
+      </p>
+    `;
 
     return;
   }
@@ -236,14 +237,14 @@ function showTasksForDate() {
 
   filteredTasks.forEach((task) => {
     html += `
-            <div class="glass-card mt-3">
+      <div class="glass-card mt-3">
 
-                <h4>${task.title}</h4>
+        <h4>${task.title}</h4>
 
-                <p>${task.description}</p>
+        <p>${task.description}</p>
 
-            </div>
-        `;
+      </div>
+    `;
   });
 
   calendarTasks.innerHTML = html;
@@ -259,9 +260,12 @@ async function deleteTask(id) {
   }
 
   try {
-    const response = await fetch(`http://localhost:5000/api/tasks/${id}`, {
-      method: "DELETE",
-    });
+    const response = await fetch(
+      `https://team-task-manager-production-8cb5.up.railway.app/api/tasks/${id}`,
+      {
+        method: "DELETE",
+      },
+    );
 
     const data = await response.json();
 

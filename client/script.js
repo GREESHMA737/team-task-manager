@@ -10,18 +10,21 @@ loginForm.addEventListener("submit", async (e) => {
   console.log(email, password);
 
   try {
-    const response = await fetch("http://localhost:5000/api/auth/login", {
-      method: "POST",
+    const response = await fetch(
+      "https://team-task-manager-production-8cb5.up.railway.app",
+      {
+        method: "POST",
 
-      headers: {
-        "Content-Type": "application/json",
+        headers: {
+          "Content-Type": "application/json",
+        },
+
+        body: JSON.stringify({
+          email,
+          password,
+        }),
       },
-
-      body: JSON.stringify({
-        email,
-        password,
-      }),
-    });
+    );
 
     const data = await response.json();
 
